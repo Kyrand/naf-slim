@@ -1,0 +1,132 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Dev Example — Networked-Aframe</title>
+    <meta name="description" content="Dev Example — Networked-Aframe">
+
+    <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js"></script>
+    <!-- <script>window.NAF || document.write('<script src="https://unpkg.com/networked-aframe/dist/networked-aframe.min.js">\x3C/script>')</script> -->
+    <script src="https://unpkg.com/networked-aframe/dist/networked-aframe.min.js"></script>
+    <!-- <script src="/assets/libs/networked-aframe.js"></script> -->
+
+    <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
+    <script src="https://unpkg.com/aframe-particle-system-component@1.0.5/dist/aframe-particle-system-component.min.js"></script>
+    <script src="/assets/components/spawn-in-circle.component.js"></script>
+    <script src="/assets/components/look-at.component.js"></script>
+  </head>
+  <body>
+    <!-- adapter: [socketio, webrtc] -->
+    <a-scene networked-scene="
+      serverURL: localhost:8080;
+      room: basic-audio;
+      debug: true;
+      adapter: webrtc;
+      audio: false;
+    ">
+      <a-assets>
+
+        <img id="grid" src="https://img.gs/bbdkhfbzkk/stretch/https://i.imgur.com/25P1geh.png" crossorigin="anonymous">
+        <img id="sky" src="https://i.imgur.com/WqlqEkq.jpg" crossorigin="anonymous" />
+
+        <!-- Templates -->
+        <template id="avatar-template-kyran">
+          <a-entity gltf-model="url(assets/avatars/kyran.glb)"></a-entity>
+        </template>
+
+        <!-- Avatar -->
+        <template id="avatar-template">
+          <a-entity class="avatar">
+            <a-entity class="nametag"
+                      text="value: Hello World; align:center;"
+                      position="0 0.7 0" rotation="0 180 0" scale="8 8 8"
+                      look-at="[camera]"
+            ></a-entity>
+            <a-sphere class="head"
+              color="#ffffff"
+              scale="0.45 0.5 0.4"
+            ></a-sphere>
+            <a-entity class="face"
+              position="0 0.05 0"
+            >
+              <a-sphere class="eye"
+                color="#efefef"
+                position="0.16 0.1 -0.35"
+                scale="0.12 0.12 0.12"
+              >
+                <a-sphere class="pupil"
+                  color="#000"
+                  position="0 0 -1"
+                  scale="0.2 0.2 0.2"
+                ></a-sphere>
+              </a-sphere>
+              <a-sphere class="eye"
+                color="#efefef"
+                position="-0.16 0.1 -0.35"
+                scale="0.12 0.12 0.12"
+              >
+                <a-sphere class="pupil"
+                  color="#000"
+                  position="0 0 -1"
+                  scale="0.2 0.2 0.2"
+                ></a-sphere>
+              </a-sphere>
+            </a-entity>
+          </a-entity>
+        </template>
+
+        <!-- /Templates -->
+        <video id="saddywaddy"
+               autoplay loop="true"
+               crossorigin="anonymous"
+               muted="true"
+               src="./assets/videos/saddywaddy.mp4">
+        </video>
+      </a-assets>
+
+      <a-entity id="player"
+        networked="template:#avatar-template;attachTemplateToLocal:false;"
+        camera
+        position="0 1.6 0"
+        spawn-in-circle="radius:3"
+        wasd-controls look-controls
+      >
+
+        <a-sphere class="head"
+          visible="false"
+          random-color
+        ></a-sphere>
+      </a-entity>
+
+      <a-video id="saddyvid"
+               rotation="0 0 0"
+               src="#saddywaddy"
+               play="true"
+               width="16" height="9" position="-0.5875 4.37471 -5" scale="0.77782 0.77782 0.77782">
+      </a-video>
+
+      <a-entity position="0 0 0"
+        geometry="primitive: plane; width: 10000; height: 10000;" rotation="-90 0 0"
+        material="src: #grid; repeat: 10000 10000; transparent: true; metalness:0.6; roughness: 0.4; sphericalEnvMap: #sky;"></a-entity>
+
+      <a-entity light="color: #ccccff; intensity: 1; type: ambient;" visible=""></a-entity>
+      <a-entity light="color: #ffaaff; intensity: 1.5" position="5 5 5"></a-entity>
+
+      <a-sky src="#sky" rotation="0 -90 0"></a-sky>
+      <a-entity id="particles" particle-system="preset: snow"></a-entity>
+    </a-scene>
+
+    <script src="./index.js"></script>
+
+    <!-- <script type="module">
+         import Init from './index.js'
+         </script> -->
+    <script>
+     function onConnect() {
+       console.log("HERE!!!")
+       kgd.onConnect()
+     }
+      // Define custom schema for syncing avatar color, set by random-color
+    </script>
+  </body>
+</html>
