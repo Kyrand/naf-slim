@@ -34,10 +34,10 @@ AFRAME.registerComponent('video-sync', {
     }
 
     if (this.data.paused && !video.paused) {
-      console.log('video paused')
+      console.log('video paused at ', this.data.currentTime)
       video.pause();
     } else if (!this.data.paused && video.paused) {
-      console.log('video played')
+      console.log('video played at ', this.data.currentTime)
       video.play();
       video.currentTime = this.data.currentTime;
     }
