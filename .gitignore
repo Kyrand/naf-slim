@@ -63,3 +63,4 @@ examples/build.js
 dist
 .cache
 .#*
+sandpit/demos

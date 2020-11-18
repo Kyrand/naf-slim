@@ -14,6 +14,9 @@
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.5/dist/aframe-particle-system-component.min.js"></script>
     <script src="/assets/components/spawn-in-circle.component.js"></script>
     <script src="/assets/components/look-at.component.js"></script>
+    <script src="/assets/components/video-sync.component.js"></script>
+    <script src="/assets/components/controls.component.js"></script>
+    <script src="/assets/components/host.component.js"></script>
   </head>
   <body>
     <!-- adapter: [socketio, webrtc] -->
@@ -22,9 +25,21 @@
       room: basic-audio;
       debug: true;
       adapter: webrtc;
-      audio: false;
-    ">
+      audio: false;"
+    >
       <a-assets>
+
+        <!-- Buttons -->
+
+        <img id="play" src="https://cdn.glitch.com/b316bbdc-0b0c-4c6d-94fb-fffb37f510a9%2Fplay.png?v=1589407864805" crossorigin="anonymous">
+       	<img id="pause" src="https://cdn.glitch.com/b316bbdc-0b0c-4c6d-94fb-fffb37f510a9%2Fpause.png?v=1589407941269" crossorigin="anonymous">
+
+        <img id="next" src="https://cdn.glitch.com/b316bbdc-0b0c-4c6d-94fb-fffb37f510a9%2Fnext.png?v=1589407819880" crossorigin="anonymous">
+        <img id="previous" src="https://cdn.glitch.com/b316bbdc-0b0c-4c6d-94fb-fffb37f510a9%2Fprevious.png?v=1589407813380" crossorigin="anonymous">
+
+        <img id="volume-low" src="https://cdn.glitch.com/b316bbdc-0b0c-4c6d-94fb-fffb37f510a9%2Fvolume1.png?v=1589410578173" crossorigin="anonymous">
+        <img id="volume-high" src="https://cdn.glitch.com/b316bbdc-0b0c-4c6d-94fb-fffb37f510a9%2Fvolume2.png?v=1589410579945" crossorigin="anonymous">
+
 
         <img id="grid" src="https://img.gs/bbdkhfbzkk/stretch/https://i.imgur.com/25P1geh.png" crossorigin="anonymous">
         <img id="sky" src="https://i.imgur.com/WqlqEkq.jpg" crossorigin="anonymous" />
@@ -76,20 +91,45 @@
         </template>
 
         <!-- /Templates -->
-        <video id="saddywaddy"
+        <video id="html-video"
                autoplay loop="true"
                crossorigin="anonymous"
                muted="true"
+               width="16" height="9" position="0 5 -8" scale="0.77782 0.77782 0.77782"
                src="./assets/videos/saddywaddy.mp4">
         </video>
+
+        <!-- <video id="html-video"
+             autoplay loop="true"
+             crossorigin="anonymous"
+             muted="true"
+             src="./assets/videos/saddywaddy.mp4">
+             </video>
+        -->
+        <template id="video-template">
+          <a-entity scale="10 10 10">
+            <a-video video-sync
+                     class="front"
+                     material="side:front"
+                     src="#html-video"
+                     play="true"
+             >
+            </a-video>
+            <a-plane class="back" rotation="0 180 0" material="color:red;side:front"
+                     text="align:center;wrapCount:8;value: Big Screen!"></a-plane>
+          </a-entity>
+        </template>
+
       </a-assets>
 
       <a-entity id="player"
+        host
         networked="template:#avatar-template;attachTemplateToLocal:false;"
         camera
         position="0 1.6 0"
         spawn-in-circle="radius:3"
         wasd-controls look-controls
+        cursor="rayOrigin: mouse"
       >
 
         <a-sphere class="head"
@@ -98,12 +138,23 @@
         ></a-sphere>
       </a-entity>
 
-      <a-video id="saddyvid"
-               rotation="0 0 0"
-               src="#saddywaddy"
-               play="true"
-               width="16" height="9" position="-0.5875 4.37471 -5" scale="0.77782 0.77782 0.77782">
-      </a-video>
+      <!-- <a-video id="saddyvid"
+           rotation="0 0 0"
+           src="#saddywaddy"
+           play="true"
+           width="16" height="9" position="-0.5875 4.37471 -5" scale="0.77782 0.77782 0.77782">
+           </a-video> -->
+
+      <a-image
+        id="videoControls"
+        src="#play"
+        position="-0.4 1 -1"
+        scale="0.2 0.2 1"
+        play-pause
+        animation__mouseenter="property: scale; to: 0.27 0.27 1; dur: 300; startEvents: mouseenter"
+        animation__mouseleave="property: scale; to: 0.2 0.2 1; dur: 300; startEvents: mouseleave"
+      >
+      </a-image>
 
       <a-entity position="0 0 0"
         geometry="primitive: plane; width: 10000; height: 10000;" rotation="-90 0 0"
@@ -114,6 +165,18 @@
 
       <a-sky src="#sky" rotation="0 -90 0"></a-sky>
       <a-entity id="particles" particle-system="preset: snow"></a-entity>
+
+      <a-entity
+        id="mouseCursor"
+        bind__raycaster="enabled: !inVR"
+        cursor="rayOrigin: mouse"
+        raycaster="objects: [raycastable]">
+      </a-entity>
+
+      <a-camera>
+			  <!-- <a-cursor color="#FAFAFA"></a-cursor> -->
+		  </a-camera>
+
     </a-scene>
 
     <script src="./index.js"></script>

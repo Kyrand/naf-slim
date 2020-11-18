@@ -22,6 +22,30 @@ NAF.schemas.add({
   ]
 });
 
+NAF.schemas.add({
+  template: '#video-template',
+  components: [
+    'position',
+    'rotation',
+    {
+      selector: '.front',
+      component: 'video-sync',
+      property: 'paused',
+    },
+    {
+      selector: '.front',
+      component: 'video-sync',
+      property: 'src',
+    },
+    {
+      selector: '.front',
+      component: 'video-sync',
+      property: 'currentTime',
+    },
+  ]
+});
+
+
 // Called by Networked-Aframe when connected to server
 let onConnect = kgd.onConnect = function() {
   console.log("onConnect", new Date());
